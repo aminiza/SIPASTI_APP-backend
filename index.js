@@ -35,11 +35,12 @@ app.use(
 
 app.use(
   cors({
-    credentials: true,
     origin: [
-      "http://localhost:5173",
       "https://sipasti-app-frontend.vercel.app",
+      "http://localhost:5173",
     ],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    credentials: true,
   })
 );
 
