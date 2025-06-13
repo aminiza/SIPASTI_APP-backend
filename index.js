@@ -15,6 +15,25 @@ import PengeluaranRouter from "./routes/PengeluaranRoute.js";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+const corsOptions = {
+  origin: "https://sipasti-app-frontend.vercel.app",
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "Access-Control-Allow-Origin",
+    "Access-Control-Allow-Headers",
+    "X-Requested-With",
+  ],
+  credentials: true,
+  optionsSuccessStatus: 204,
+  preflightContinue: false,
+};
+
+app.use(express.json());
+app.use(cors(corsOptions));
+
 const sessionStore = SequelizeStore(session.Store);
 const store = new sessionStore({
   db: db,
@@ -33,19 +52,8 @@ app.use(
   })
 );
 
-const corsOptions = {
-  origin: "https://sipasti-app-frontend.vercel.app",
-  allowedHeaders: [
-    "Content-Type",
-    "Authorization",
-    "Access-Control-Allow-Origin",
-  ],
-  credentials: true,
-};
+app.options('*', cors(corsOptions));
 
-app.use(cors(corsOptions));
-
-app.use(express.json());
 app.use(userRouter);
 app.use(AuthRouter);
 app.use(LahanRouter);
