@@ -35,16 +35,15 @@ app.use(
 
 const corsOptions = {
   origin: "https://sipasti-app-frontend.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "Access-Control-Allow-Origin",
+  ],
   credentials: true,
-  optionsSuccessStatus: 204,
-  preflightContinue: false,
-}
+};
 
 app.use(cors(corsOptions));
-
-app.options('*', cors(corsOptions));
 
 app.use(express.json());
 app.use(userRouter);
@@ -64,5 +63,4 @@ app.use(PengeluaranRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  console.log("Cors configured", corsOptions.origin)
 });
