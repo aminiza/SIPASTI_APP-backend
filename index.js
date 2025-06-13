@@ -14,11 +14,11 @@ import PengeluaranRouter from "./routes/PengeluaranRoute.js";
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT =  process.env.PORT || 5000;
 const sessionStore = SequelizeStore(session.Store);
 const store = new sessionStore({
   db: db,
-})
+});
 
 app.use(
   session({
@@ -27,7 +27,8 @@ app.use(
     saveUninitialized: true,
     store: store,
     cookie: {
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
     },
   })
 );
@@ -35,7 +36,10 @@ app.use(
 app.use(
   cors({
     credentials: true,
-    origin: "https://sipasti-app-frontend.vercel.app",
+    origin: [
+      "http://localhost:5173",
+      "https://sipasti-app-frontend.vercel.app",
+    ],
   })
 );
 
