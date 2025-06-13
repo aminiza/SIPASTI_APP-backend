@@ -14,7 +14,7 @@ import PengeluaranRouter from "./routes/PengeluaranRoute.js";
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 const corsOptions = {
   origin: "https://sipasti-app-frontend.vercel.app",
@@ -52,7 +52,6 @@ app.use(
   })
 );
 
-app.options('*', cors(corsOptions));
 
 app.use(userRouter);
 app.use(AuthRouter);
@@ -69,6 +68,6 @@ app.use(PengeluaranRouter);
 //   console.log("Database connected");
 // })();
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0",() => {
   console.log(`Server is running on port ${PORT}`);
 });
