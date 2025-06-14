@@ -2,10 +2,12 @@ import express from "express";
 import {
   login, 
   logout,
-  Me
+  Me, 
+  Token
 } from "../controllers/Auth.js";
 const router = express.Router();
 
+router.get("/refresh-token", Token);
 router.get("/me", Me);
 router.post("/login", login);
 router.delete("/logout", logout);

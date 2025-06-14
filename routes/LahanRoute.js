@@ -7,12 +7,13 @@ import {
   getLahan,
 } from "../controllers/Lahan.js";
 import { verifyUser } from "../middleware/AuthUser.js";
+import { verifyAccessToken } from "../controllers/Auth.js";
 const router = express.Router();
 
-router.get("/lahan", verifyUser, getLahan);
-router.get("/lahan/:id", verifyUser, getLahanById);
-router.post("/lahan", verifyUser, createLahan);
-router.patch("/lahan/:id", verifyUser, updateLahan);
-router.delete("/lahan/:id", verifyUser, deleteLahan);
+router.get("/lahan", verifyAccessToken, verifyUser, getLahan);
+router.get("/lahan/:id", verifyAccessToken, verifyUser, getLahanById);
+router.post("/lahan", verifyAccessToken, verifyUser, createLahan);
+router.patch("/lahan/:id", verifyAccessToken, verifyUser, updateLahan);
+router.delete("/lahan/:id", verifyAccessToken, verifyUser, deleteLahan);
 
 export default router;
