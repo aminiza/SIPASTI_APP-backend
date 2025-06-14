@@ -21,11 +21,7 @@ app.use(cookieParser());
 const corsOptions = {
   origin: "https://sipasti-app-frontend.vercel.app",
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: [
-    "Content-Type",
-    "Authorization",
-    "X-Requested-With",
-  ],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   credentials: true,
   optionsSuccessStatus: 204,
   preflightContinue: false,
@@ -50,12 +46,11 @@ app.use(
       secure: true,
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 1000 * 60 * 60 * 24,
-      domain: undefined,
+      domain: process.env.NODE_ENV === "production" ? ".railway.app" : undefined,
     },
     proxy: true,
   })
 );
-
 
 app.use(AuthRouter);
 app.use(userRouter);
@@ -72,6 +67,6 @@ app.use(PengeluaranRouter);
 //   console.log("Database connected");
 // })();
 
-app.listen(PORT, "0.0.0.0",() => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server is running on port ${PORT}`);
 });
