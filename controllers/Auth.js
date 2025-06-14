@@ -22,8 +22,8 @@ export const verifyAccessToken = (req, res, next) => {
 export const Token = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
 
-  if (!refreshToken) {
-    return res.status(401).json({ message: "refresh token not found" });
+  if (!refreshToken) {  
+    return res.status(401).json({ message: "refresh token not found", details: "refresh token not found", cookies: req.cookies });
   }
 
   const userId = verifyRefreshToken(refreshToken);

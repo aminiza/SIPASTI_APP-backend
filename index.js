@@ -11,10 +11,12 @@ import JadwalTanamRouter from "./routes/JadwalTanamRoute.js";
 import PupukRouter from "./routes/PupukRoute.js";
 import PenggunaanPupukRouter from "./routes/PenggunaanPupukRouter.js";
 import PengeluaranRouter from "./routes/PengeluaranRoute.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
+app.use(cookieParser());
 
 const corsOptions = {
   origin: "https://sipasti-app-frontend.vercel.app",
