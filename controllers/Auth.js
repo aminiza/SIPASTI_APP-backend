@@ -33,8 +33,8 @@ export const Token = async (req, res) => {
   const { accessToken, refreshToken: newRefreshToken } = generateTokens(userId);
   res.cookie("refreshToken", newRefreshToken, {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     maxAge: 24 * 60 * 60 * 1000,
   });
   res.json({ accessToken });
@@ -56,8 +56,8 @@ export const login = async (req, res) => {
   const { accessToken, refreshToken } = generateTokens(user.uuid);
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     maxAge: 24 * 60 * 60 * 1000,
   });
 
@@ -72,34 +72,34 @@ export const login = async (req, res) => {
       email,
       role,
     },
-    { accessToken }
+    accessToken
   );
 };
 
 export const Me = async (req, res) => {
   try {
-  if (!req.session.userId && !req.headers.authorization) {
-    return res.status(401).json({ message: "Token/session not found" });
-  }
+    if (!req.session.userId && !req.headers.authorization) {
+      return res.status(401).json({ message: "Token/session not found" });
+    }
 
-  let userId;
+    let userId;
 
-  if (req.headers.authorization) {
-    const token = req.headers.authorization?.split(" ")[1];
-    const decode = jwt.verify(token, process.env.JWT_SECRET);
-    userId = decode.userId;
-  } else {
-    userId = req.session.userId;
-  }
+    if (req.headers.authorization) {
+      const token = req.headers.authorization?.split(" ")[1];
+      const decode = jwt.verify(token, process.env.JWT_SECRET);
+      userId = decode.userId;
+    } else {
+      userId = req.session.userId;
+    }
 
-  const user = await Users.findOne({
-    attributes: ["uuid", "name", "email", "role"],
-    where: {
-      uuid: userId,
-    },
-  });
+    const user = await Users.findOne({
+      attributes: ["uuid", "name", "email", "role"],
+      where: {
+        uuid: userId,
+      },
+    });
 
-  if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({ message: "User not found" });
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
