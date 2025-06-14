@@ -39,6 +39,15 @@ const store = new sessionStore({
   db: db,
 });
 
+const getCookieDomain = () => {
+  if(process.env.NODE_ENV !== "production") return undefined;
+  if(process.env.FRONTEND_URL) {
+    const url = new URL(process.env.FRONTEND_URL);
+    return url.hostname.replace("www.", "");
+  }
+  return '.railway.app'
+}
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -47,8 +56,12 @@ app.use(
     store: store,
     cookie: {
       secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      sameSite: process.env.node === "production" ? "none" : "lax",
+      maxAge: 1000 * 60 * 60 * 24,
+      httpOnly: true,
+      domain: getCookieDomain(),
     },
+    proxy: true,
   })
 );
 
