@@ -77,30 +77,29 @@ export const login = async (req, res) => {
 };
 
 export const Me = async (req, res) => {
-  if (!req.session.userId && !req.headers.authorization) {
-    return res.status(401).json({ message: "Mohon login diakun anda" });
-  }
-
-  if (req.session.userId) {
-    const user = await Users.findOne({
-      attributes: ["uuid", "name", "email", "role"],
-      where: {
-        uuid: req.session.userId,
-      },
-    });
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.status(200).json(user);
-  }
-
   try {
+  if (!req.session.userId && !req.headers.authorization) {
+    return res.status(401).json({ message: "Token/session not found" });
+  }
+
+  let userId;
+
+  if (req.headers.authorization) {
     const token = req.headers.authorization?.split(" ")[1];
     const decode = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await Users.findOne({
-      attributes: ["uuid", "name", "email", "role"],
-      where: {
-        uuid: decode.userId,
-      },
-    });
+    userId = decode.userId;
+  } else {
+    userId = req.session.userId;
+  }
+
+  const user = await Users.findOne({
+    attributes: ["uuid", "name", "email", "role"],
+    where: {
+      uuid: userId,
+    },
+  });
+
+  if (!user) return res.status(404).json({ message: "User not found" });
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
