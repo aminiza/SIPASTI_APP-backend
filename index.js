@@ -22,13 +22,12 @@ const corsOptions = {
   allowedHeaders: [
     "Content-Type",
     "Authorization",
-    "Access-Control-Allow-Origin",
-    "Access-Control-Allow-Headers",
     "X-Requested-With",
   ],
   credentials: true,
   optionsSuccessStatus: 204,
   preflightContinue: false,
+  exposedHeaders: ["Set-Cookie"],
 };
 
 app.use(express.json());
@@ -52,11 +51,11 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: store,
     cookie: {
       secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.node === "production" ? "none" : "lax",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
       domain: getCookieDomain(),
